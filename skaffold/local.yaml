@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: northwind-api
+spec:
+  containers:
+  - name: northwind-api
+    image: northwind-api
+    # ports:
+    # - containerPort: 8080
+    #   name: http    

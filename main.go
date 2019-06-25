@@ -8,9 +8,9 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/u/Go_Angular/backend/customer"
-	"github.com/u/Go_Angular/backend/employee"
-	"github.com/u/Go_Angular/backend/product"
+	"github.com/smithasencios/Golang_Northwind_API/customer"
+	"github.com/smithasencios/Golang_Northwind_API/employee"
+	"github.com/smithasencios/Golang_Northwind_API/product"
 )
 
 func main() {
@@ -50,7 +50,7 @@ func main() {
 }
 
 func initDB() *sql.DB {
-	db, err := sql.Open("mysql", "demouser:cofebe@tcp(127.0.0.1:3306)/northwind")
+	db, err := sql.Open("mysql", "demouser:1234@tcp(127.0.0.1:30008)/northwind")
 	if err != nil {
 		panic(err.Error())
 	}

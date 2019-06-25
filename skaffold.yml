@@ -1,0 +1,16 @@
+apiVersion: skaffold/v1beta10
+kind: Config
+build:
+  artifacts:
+  - image: northwind-api
+    context: .
+    # sync:
+    #   manual:
+    #   - src: '**/*.go'
+    #     dest: '$GOPATH/src/github.com/smithasencios/Golang_Northwind_API/'  
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - skaffold/local.yaml
