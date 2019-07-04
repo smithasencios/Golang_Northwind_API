@@ -11,10 +11,12 @@ import (
 	"github.com/smithasencios/Golang_Northwind_API/customer"
 	"github.com/smithasencios/Golang_Northwind_API/employee"
 	"github.com/smithasencios/Golang_Northwind_API/product"
+	"os"
+	"strings"
+	"fmt"
 )
 
 func main() {
-	//lambda.Start(handler)
 	dbInstance := initDB()
 	var (
 		employeeRepo = employee.NewRepository(dbInstance)
@@ -45,18 +47,27 @@ func main() {
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
 
-	server := http.ListenAndServe(":8080", r)
+	server := http.ListenAndServe(":3000", r)
 	log.Fatal(server)
 }
 
 func initDB() *sql.DB {
-	db, err := sql.Open("mysql", "demouser:1234@tcp(127.0.0.1:3306)/northwind")
+	conexionString := join(os.Getenv("NORTHWIND_DB_USER"),":",os.Getenv("NORTHWIND_DB_PASSWORD"),"@tcp(",os.Getenv("DATABASE_HOST"),")/",os.Getenv("NORTHWIND_DB_DATABASE"))
+	fmt.Println(conexionString)
+	db, err := sql.Open("mysql", conexionString)
+	//root:lfda@tcp(localhost:3306)/northwind  
+
 	if err != nil {
+
 		panic(err.Error())
 	}
 	// defer db.Close()
 	return db
 }
-func handler() (string, error) {
-	return "Welcome to serverless world", nil
+func join(strs ...string) string {
+	var sb strings.Builder
+	for _, str := range strs {
+		sb.WriteString(str)
+	}
+	return sb.String()
 }

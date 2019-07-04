@@ -11,3 +11,12 @@ spec:
     ports:
     - containerPort: 3000
       name: http    
+    env:
+      - name: DATABASE_HOST
+        value: api-db-mariadb.mariadb 
+      - name: NORTHWIND_DB_DATABASE
+        value: "northwind"
+      - name: NORTHWIND_DB_USER
+        value: root
+      - name: NORTHWIND_DB_PASSWORD
+        value: lfda

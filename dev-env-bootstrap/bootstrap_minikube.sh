@@ -22,7 +22,7 @@ if [[ -f "mysql-external-service.yaml" ]]; then
   kubectl apply -f dev-northwind-api-external-service.yaml
 	echo "Check env status with `kubectl get all` for ready "
   echo "Create the tables in northwind database: mysql -u root -p --host $(minikube ip) --port 30002 < database_creation_script.sql"
-  echo "Create the tables in northwind database: mysql -u root -p --host $(minikube ip) --port 30002 < database_data_script.sql"
+  echo "Insert Data in northwind database: mysql -u root -p --host $(minikube ip) --port 30002 < database_data_script.sql"
   
   echo "run skaffold dev commands"
 	exit 0
