@@ -1,7 +1,7 @@
 # FROM golang:latest AS builder
 FROM golang:1.10.1-alpine3.7 as builder
 
-WORKDIR $GOPATH/src/github.com/smithasencios/Golang_Northwind_API
+WORKDIR $GOPATH/src/github.com/Golang_Northwind_API
 COPY . .
 RUN apk --update upgrade  && \
   apk add --no-cache ca-certificates openssh-client curl git bash

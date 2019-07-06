@@ -9,13 +9,13 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Golang_Northwind_API/customer"
+	"github.com/Golang_Northwind_API/employee"
+	"github.com/Golang_Northwind_API/order"
+	"github.com/Golang_Northwind_API/product"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/smithasencios/Golang_Northwind_API/customer"
-	"github.com/smithasencios/Golang_Northwind_API/employee"
-	"github.com/smithasencios/Golang_Northwind_API/order"
-	"github.com/smithasencios/Golang_Northwind_API/product"
 )
 
 func main() {

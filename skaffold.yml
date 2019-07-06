@@ -7,7 +7,7 @@ build:
     # sync:
     #   manual:
     #   - src: '**/*.go'
-    #     dest: '$GOPATH/src/github.com/smithasencios/Golang_Northwind_API/'  
+    #     dest: '$GOPATH/src/github.com/Golang_Northwind_API/'  
     docker:
       dockerfile: Dockerfile
 deploy:
