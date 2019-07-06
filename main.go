@@ -5,15 +5,17 @@ import (
 	"log"
 	"net/http"
 
+	"fmt"
+	"os"
+	"strings"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/smithasencios/Golang_Northwind_API/customer"
 	"github.com/smithasencios/Golang_Northwind_API/employee"
+	"github.com/smithasencios/Golang_Northwind_API/order"
 	"github.com/smithasencios/Golang_Northwind_API/product"
-	"os"
-	"strings"
-	"fmt"
 )
 
 func main() {
@@ -22,15 +24,18 @@ func main() {
 		employeeRepo = employee.NewRepository(dbInstance)
 		productRepo  = product.NewRepository(dbInstance)
 		customerRepo = customer.NewRepository(dbInstance)
+		orderRepo    = order.NewRepository(dbInstance)
 	)
 	var (
 		employeeService employee.Service
 		productService  product.Service
 		customerService customer.Service
+		orderService    order.Service
 	)
 	employeeService = employee.New(employeeRepo)
 	productService = product.New(productRepo)
 	customerService = customer.New(customerRepo)
+	orderService = order.New(orderRepo)
 
 	r := chi.NewRouter()
 	cors := cors.New(cors.Options{
@@ -46,16 +51,17 @@ func main() {
 	r.Mount("/employees", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
+	r.Mount("/orders", order.MakeHTTPHandler(orderService))
 
 	server := http.ListenAndServe(":3000", r)
 	log.Fatal(server)
 }
 
 func initDB() *sql.DB {
-	conexionString := join(os.Getenv("NORTHWIND_DB_USER"),":",os.Getenv("NORTHWIND_DB_PASSWORD"),"@tcp(",os.Getenv("DATABASE_HOST"),")/",os.Getenv("NORTHWIND_DB_DATABASE"))
+	conexionString := join(os.Getenv("NORTHWIND_DB_USER"), ":", os.Getenv("NORTHWIND_DB_PASSWORD"), "@tcp(", os.Getenv("DATABASE_HOST"), ")/", os.Getenv("NORTHWIND_DB_DATABASE"))
 	fmt.Println(conexionString)
 	db, err := sql.Open("mysql", conexionString)
-	//root:lfda@tcp(localhost:3306)/northwind  
+	//root:lfda@tcp(localhost:3306)/northwind
 
 	if err != nil {
 
