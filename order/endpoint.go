@@ -19,6 +19,10 @@ type addOrderDetailRequest struct {
 	Quantity  int64
 	UnitPrice float64
 }
+type getOrdersRequest struct {
+	Limit  int
+	Offset int
+}
 
 func makeAddProductEndpoint(s Service) endpoint.Endpoint {
 	addOrderEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
@@ -31,4 +35,16 @@ func makeAddProductEndpoint(s Service) endpoint.Endpoint {
 	}
 
 	return addOrderEndpoint
+}
+func makeGetOrdersEndpoint(s Service) endpoint.Endpoint {
+	getOrdersEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getOrdersRequest)
+		r, err := s.GetOrders(ctx, &req)
+		if err != nil {
+			return nil, err
+		}
+		return r, nil
+	}
+
+	return getOrdersEndpoint
 }

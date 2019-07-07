@@ -6,6 +6,7 @@ import (
 
 type Service interface {
 	InsertOrder(ctx context.Context, params *addOrderRequest) (int64, error)
+	GetOrders(ctx context.Context, params *getOrdersRequest) (*OrderList, error)
 }
 
 type service struct {
@@ -31,4 +32,15 @@ func (s *service) InsertOrder(ctx context.Context, params *addOrderRequest) (int
 		}
 	}
 	return orderId, err
+}
+func (s *service) GetOrders(ctx context.Context, params *getOrdersRequest) (*OrderList, error) {
+	orders, err := s.repo.GetOrders(ctx, params)
+	if err != nil {
+		panic(err.Error())
+	}
+	totalOrders, err := s.repo.GetTotalOrders()
+	if err != nil {
+		panic(err.Error())
+	}
+	return &OrderList{Data: orders, TotalRecords: totalOrders}, err
 }

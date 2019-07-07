@@ -17,7 +17,15 @@ func MakeHTTPHandler(s Service) http.Handler {
 		addOrderRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
+
 	r.Method(http.MethodPost, "/", addOrderHandler)
+
+	getOrdersHandler := kithttp.NewServer(
+		makeGetOrdersEndpoint(s),
+		getOrdersRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPost, "/paginated", getOrdersHandler)
 	return r
 }
 
@@ -26,6 +34,15 @@ func addOrderRequestDecoder(_ context.Context, r *http.Request) (interface{}, er
 	err := json.NewDecoder(r.Body).Decode(&request)
 
 	fmt.Printf("%+v\n", request)
+	if err != nil {
+		return nil, err
+	}
+
+	return request, nil
+}
+func getOrdersRequestDecoder(_ context.Context, r *http.Request) (interface{}, error) {
+	request := getOrdersRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		return nil, err
 	}
