@@ -8,7 +8,7 @@ import (
 type Repository interface {
 	InsertOrder(ctx context.Context, params *addOrderRequest) (int64, error)
 	InsertOrderDetail(ctx context.Context, params *addOrderDetailRequest) (int64, error)
-	GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderHeader, error)
+	GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderListItem, error)
 	GetTotalOrders() (int64, error)
 }
 
@@ -51,20 +51,23 @@ func (repo *repository) InsertOrderDetail(ctx context.Context, params *addOrderD
 	return id, nil
 }
 
-func (repo *repository) GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderHeader, error) {
-	const sql = `SELECT id,customer_id,order_date
-	FROM orders
+func (repo *repository) GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderListItem, error) {
+	const sql = `SELECT o.id,o.customer_id,o.order_date,o.status_id,os.status_name,
+	CONCAT(c.first_name,' ',c.last_name) as customer_name
+	FROM orders o
+	INNER JOIN orders_status os ON o.status_id = os.id
+	INNER JOIN customers c ON o.customer_id = c.id
 	LIMIT ? OFFSET ?`
 	results, err := repo.db.Query(sql, params.Limit, params.Offset)
 
 	if err != nil {
 		panic(err.Error())
 	}
-	var orders []*OrderHeader
+	var orders []*OrderListItem
 
 	for results.Next() {
-		order := &OrderHeader{}
-		err = results.Scan(&order.ID, &order.CustomerID, &order.OrderDate)
+		order := &OrderListItem{}
+		err = results.Scan(&order.ID, &order.CustomerID, &order.OrderDate, &order.StatusId, &order.StatusName, &order.Customer)
 		if err != nil {
 			panic(err.Error())
 		}
