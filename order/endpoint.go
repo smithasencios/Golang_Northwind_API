@@ -23,6 +23,9 @@ type getOrdersRequest struct {
 	Limit  int
 	Offset int
 }
+type getOrderDetailRequest struct {
+	orderId int64
+}
 
 func makeAddProductEndpoint(s Service) endpoint.Endpoint {
 	addOrderEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {

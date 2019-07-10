@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	kithttp "github.com/go-kit/kit/transport/http"
@@ -26,6 +27,14 @@ func MakeHTTPHandler(s Service) http.Handler {
 		kithttp.EncodeJSONResponse,
 	)
 	r.Method(http.MethodPost, "/paginated", getOrdersHandler)
+
+	// getOrderDetailHandler := kithttp.NewServer(
+	// 	makeGetOrderDetailEndpoint(s),
+	// 	getOrderDetailRequestDecoder,
+	// 	kithttp.EncodeJSONResponse,
+	// )
+	// r.Method(http.MethodGet, "/{id}", getOrderDetailHandler)
+
 	return r
 }
 
@@ -48,4 +57,13 @@ func getOrdersRequestDecoder(_ context.Context, r *http.Request) (interface{}, e
 	}
 
 	return request, nil
+}
+func getOrderDetailRequestDecoder(_ context.Context, r *http.Request) (interface{}, error) {
+	orderId, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	return getOrderDetailRequest{
+		orderId: orderId,
+	}, nil
 }

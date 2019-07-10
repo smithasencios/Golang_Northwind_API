@@ -9,6 +9,7 @@ type Repository interface {
 	InsertOrder(ctx context.Context, params *addOrderRequest) (int64, error)
 	InsertOrderDetail(ctx context.Context, params *addOrderDetailRequest) (int64, error)
 	GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderListItem, error)
+	// GetOrderDetail(ctx context.Context, orderId *int64) ([]*OrderDetailListItem, error)
 	GetTotalOrders() (int64, error)
 }
 
@@ -71,6 +72,12 @@ func (repo *repository) GetOrders(ctx context.Context, params *getOrdersRequest)
 		if err != nil {
 			panic(err.Error())
 		}
+		orderDetail, err := GetOrderDetail(repo, &order.ID)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		order.Data = orderDetail
 		orders = append(orders, order)
 	}
 	return orders, nil
@@ -84,4 +91,26 @@ func (repo *repository) GetTotalOrders() (int64, error) {
 		panic(err.Error())
 	}
 	return total, nil
+}
+func GetOrderDetail(repo *repository, orderId *int64) ([]*OrderDetailListItem, error) {
+	const sql = `SELECT order_id,quantity,unit_price,p.product_name
+	FROM order_details od
+	INNER JOIN products p ON od.product_id = p.id
+	WHERE od.order_id = ?`
+	results, err := repo.db.Query(sql, orderId)
+
+	if err != nil {
+		panic(err.Error())
+	}
+	var orders []*OrderDetailListItem
+
+	for results.Next() {
+		order := &OrderDetailListItem{}
+		err = results.Scan(&order.OrderId, &order.Quantity, &order.UnitPrice, &order.ProductName)
+		if err != nil {
+			panic(err.Error())
+		}
+		orders = append(orders, order)
+	}
+	return orders, nil
 }
