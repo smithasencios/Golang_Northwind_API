@@ -9,10 +9,13 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Golang_Northwind_API/auth"
 	"github.com/Golang_Northwind_API/customer"
 	"github.com/Golang_Northwind_API/employee"
 	"github.com/Golang_Northwind_API/order"
 	"github.com/Golang_Northwind_API/product"
+	"github.com/codegangsta/negroni"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	_ "github.com/go-sql-driver/mysql"
@@ -48,10 +51,16 @@ func main() {
 	})
 	r.Use(cors.Handler)
 
+	jwtMiddleware := auth.GetJwtMiddleware()
+
+	r.Mount("/orders", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(order.MakeHTTPHandler(orderService)),
+	))
 	r.Mount("/employees", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
-	r.Mount("/orders", order.MakeHTTPHandler(orderService))
+	// r.Mount("/orders", order.MakeHTTPHandler(orderService))
 
 	server := http.ListenAndServe(":3000", r)
 	log.Fatal(server)
