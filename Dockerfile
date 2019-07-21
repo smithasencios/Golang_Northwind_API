@@ -1,7 +1,6 @@
 # FROM golang:latest AS builder
 FROM golang:1.10.1-alpine3.7 as builder
 
-# Download and install the latest release of dep
 RUN apk --update upgrade  && \
   apk add --no-cache ca-certificates openssh-client curl git bash
 
@@ -15,6 +14,7 @@ COPY . ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /app 
 
-FROM scratch  
+FROM alpine:latest  
+RUN apk --no-cache add ca-certificates
 CMD ["./app"]
 COPY --from=builder /app .

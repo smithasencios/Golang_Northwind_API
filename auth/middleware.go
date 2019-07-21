@@ -34,7 +34,7 @@ func GetJwtMiddleware() *jwtmiddleware.JWTMiddleware {
 				result, _ := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
 				return result, nil
 			},
-			SigningMethod: jwt.SigningMethodHS256,
+			SigningMethod: jwt.SigningMethodRS256,
 		})
 }
 

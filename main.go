@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/Golang_Northwind_API/auth"
@@ -14,10 +14,10 @@ import (
 	"github.com/Golang_Northwind_API/employee"
 	"github.com/Golang_Northwind_API/order"
 	"github.com/Golang_Northwind_API/product"
+	"github.com/Golang_Northwind_API/shared"
 	"github.com/codegangsta/negroni"
 
 	"github.com/go-chi/chi"
-	"github.com/go-chi/cors"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -41,15 +41,7 @@ func main() {
 	orderService = order.New(orderRepo)
 
 	r := chi.NewRouter()
-	cors := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: true,
-		MaxAge:           300,
-	})
-	r.Use(cors.Handler)
+	r.Use(shared.GetCors().Handler)
 
 	jwtMiddleware := auth.GetJwtMiddleware()
 
@@ -60,7 +52,6 @@ func main() {
 	r.Mount("/employees", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
-	// r.Mount("/orders", order.MakeHTTPHandler(orderService))
 
 	server := http.ListenAndServe(":3000", r)
 	log.Fatal(server)
