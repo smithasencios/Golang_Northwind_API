@@ -30,11 +30,13 @@ func main() {
 		productService  product.Service
 		customerService customer.Service
 		orderService    order.Service
+		authService     auth.Service
 	)
 	employeeService = employee.New(employeeRepo)
 	productService = product.New(productRepo)
 	customerService = customer.New(customerRepo)
 	orderService = order.New(orderRepo)
+	authService = auth.New()
 
 	r := chi.NewRouter()
 	r.Use(shared.GetCors().Handler)
@@ -48,6 +50,7 @@ func main() {
 	r.Mount("/employees", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
+	r.Mount("/auth", auth.MakeHTTPHandler(authService))
 
 	server := http.ListenAndServe(":3000", r)
 	log.Fatal(server)

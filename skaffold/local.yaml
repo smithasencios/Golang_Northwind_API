@@ -20,3 +20,11 @@ spec:
         value: root
       - name: NORTHWIND_DB_PASSWORD
         value: lfda
+      - name: AUTHO_URL
+        value: "https://dev-uq9rrgqz.auth0.com"
+      - name: AUTHO_AUDIENCE
+        value: "http://192.168.39.190:30101"
+      - name: AUTHO_CLIENT_ID
+        value: "KS8dbjVr6LzJEtWsIuLPl4TRmSgXiOqi"
+      - name: AUTHO_CLIENT_SECRET
+        value: "Qyy3FgF4xYJfRHU5TQt2ckYj2B0fLY5Rbz-FjvyGJQiptLO8PKuUjqqFyAlJKPdh"        

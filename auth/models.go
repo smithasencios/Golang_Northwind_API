@@ -11,3 +11,14 @@ type JSONWebKeys struct {
 	E   string   `json:"e"`
 	X5c []string `json:"x5c"`
 }
+type PermissionList struct {
+	Data []*Permission `json:"data"`
+}
+type Permission struct {
+	Permission_Name      string `json:"permission_name"`
+	Description          string `json:"description"`
+	Resource_Server_Name string `json:"resource_server_name"`
+}
+type AccessTokenItem struct {
+	Access_Token string `json:"access_token"`
+}
