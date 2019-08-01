@@ -47,8 +47,11 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(order.MakeHTTPHandler(orderService)),
 	))
+	r.Mount("/products", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(product.MakeHTTPHandler(productService)),
+	))
 	r.Mount("/employees", employee.MakeHTTPHandler(employeeService))
-	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
 	r.Mount("/auth", auth.MakeHTTPHandler(authService))
 

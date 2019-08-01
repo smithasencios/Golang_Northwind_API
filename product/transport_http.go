@@ -6,19 +6,24 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Golang_Northwind_API/auth"
 	"github.com/go-chi/chi"
 	kithttp "github.com/go-kit/kit/transport/http"
 )
 
 func MakeHTTPHandler(s Service) http.Handler {
 	r := chi.NewRouter()
+	// r.Use(middleware.Logger)
 
-	getProductsHandler := kithttp.NewServer(
-		makeGetProductsEndpoint(s),
-		getProductsRequestDecoder,
-		kithttp.EncodeJSONResponse,
-	)
-	r.Method(http.MethodPost, "/paginated", getProductsHandler)
+	r.Group(func(r chi.Router) {
+		r.Use(auth.HasPermission("read:productos"))
+		getProductsHandler := kithttp.NewServer(
+			makeGetProductsEndpoint(s),
+			getProductsRequestDecoder,
+			kithttp.EncodeJSONResponse,
+		)
+		r.Method(http.MethodPost, "/paginated", getProductsHandler)
+	})
 
 	addProductHandler := kithttp.NewServer(
 		makeAddProductEndpoint(s),
@@ -48,12 +53,15 @@ func MakeHTTPHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodPut, "/", updateProductHandler)
 
-	getBestSellersHandler := kithttp.NewServer(
-		makeBestSellersEndpoint(s),
-		getBestSellerRequestDecoder,
-		kithttp.EncodeJSONResponse,
-	)
-	r.Method(http.MethodGet, "/bestSellers", getBestSellersHandler)
+	r.Group(func(r chi.Router) {
+		r.Use(auth.HasPermission("read:productos"))
+		getBestSellersHandler := kithttp.NewServer(
+			makeBestSellersEndpoint(s),
+			getBestSellerRequestDecoder,
+			kithttp.EncodeJSONResponse,
+		)
+		r.Method(http.MethodGet, "/bestSellers", getBestSellersHandler)
+	})
 
 	return r
 }
