@@ -26,7 +26,7 @@ type getOrdersRequest struct {
 	Date_From interface{}
 	Date_To   interface{}
 }
-type getOrderDetailRequest struct {
+type getOrderByIdRequest struct {
 	orderId int64
 }
 
@@ -53,4 +53,17 @@ func makeGetOrdersEndpoint(s Service) endpoint.Endpoint {
 	}
 
 	return getOrdersEndpoint
+}
+
+func makeGetOrderByIdEndpoint(s Service) endpoint.Endpoint {
+	getOrderByIdEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getOrderByIdRequest)
+		r, err := s.GetOrderById(ctx, &req)
+		if err != nil {
+			return nil, err
+		}
+		return r, nil
+	}
+
+	return getOrderByIdEndpoint
 }

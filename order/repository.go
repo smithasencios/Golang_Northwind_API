@@ -10,7 +10,7 @@ type Repository interface {
 	InsertOrder(ctx context.Context, params *addOrderRequest) (int64, error)
 	InsertOrderDetail(ctx context.Context, params *addOrderDetailRequest) (int64, error)
 	GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderListItem, error)
-	// GetOrderDetail(ctx context.Context, orderId *int64) ([]*OrderDetailListItem, error)
+	GetOrderById(ctx context.Context, params *getOrderByIdRequest) (*OrderListItem, error)
 	GetTotalOrders(ctx context.Context, params *getOrdersRequest) (int64, error)
 }
 
@@ -99,8 +99,9 @@ func (repo *repository) GetOrders(ctx context.Context, params *getOrdersRequest)
 		order.Data = orderDetail
 		orders = append(orders, order)
 	}
-	return orders, nil
+	return orders, err
 }
+
 func (repo *repository) GetTotalOrders(ctx context.Context, params *getOrdersRequest) (int64, error) {
 	var total int64
 	var filter string
@@ -127,6 +128,32 @@ func (repo *repository) GetTotalOrders(ctx context.Context, params *getOrdersReq
 	}
 	return total, nil
 }
+
+func (repo *repository) GetOrderById(ctx context.Context, params *getOrderByIdRequest) (*OrderListItem, error) {
+	var sql = `SELECT o.id,o.customer_id,o.order_date,o.status_id,os.status_name,
+	CONCAT(c.first_name,' ',c.last_name) as customer_name
+	FROM orders o
+	INNER JOIN orders_status os ON o.status_id = os.id
+	INNER JOIN customers c ON o.customer_id = c.id
+	WHERE o.id = ? `
+
+	order := &OrderListItem{}
+
+	row := repo.db.QueryRow(sql, params.orderId)
+	err := row.Scan(&order.ID, &order.CustomerID, &order.OrderDate, &order.StatusId, &order.StatusName, &order.Customer)
+	if err != nil {
+		panic(err.Error())
+	}
+	orderDetail, err := GetOrderDetail(repo, &order.ID)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	order.Data = orderDetail
+
+	return order, err
+}
+
 func GetOrderDetail(repo *repository, orderId *int64) ([]*OrderDetailListItem, error) {
 	const sql = `SELECT order_id,quantity,unit_price,p.product_name
 	FROM order_details od
