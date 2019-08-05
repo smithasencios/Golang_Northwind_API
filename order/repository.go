@@ -3,6 +3,7 @@ package order
 import (
 	"context"
 	"database/sql"
+	"fmt"
 )
 
 type Repository interface {
@@ -10,7 +11,7 @@ type Repository interface {
 	InsertOrderDetail(ctx context.Context, params *addOrderDetailRequest) (int64, error)
 	GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderListItem, error)
 	// GetOrderDetail(ctx context.Context, orderId *int64) ([]*OrderDetailListItem, error)
-	GetTotalOrders() (int64, error)
+	GetTotalOrders(ctx context.Context, params *getOrdersRequest) (int64, error)
 }
 
 type repository struct {
@@ -53,12 +54,30 @@ func (repo *repository) InsertOrderDetail(ctx context.Context, params *addOrderD
 }
 
 func (repo *repository) GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderListItem, error) {
-	const sql = `SELECT o.id,o.customer_id,o.order_date,o.status_id,os.status_name,
+	var filter string
+
+	if params.Status != nil {
+		filter += fmt.Sprintf(" AND o.status_id  = %v ", params.Status.(float64))
+	}
+	if params.Date_From != nil && params.Date_To == nil {
+		filter += fmt.Sprintf(" AND o.order_date  >= '%v' ", params.Date_From.(string))
+	}
+	if params.Date_From == nil && params.Date_To != nil {
+		filter += fmt.Sprintf(" AND o.order_date  <= '%v' ", params.Date_To.(string))
+	}
+	if params.Date_From != nil && params.Date_To != nil {
+		filter += fmt.Sprintf(" AND o.order_date  between '%v' and '%v' ", params.Date_From.(string), params.Date_To.(string))
+	}
+
+	var sql = `SELECT o.id,o.customer_id,o.order_date,o.status_id,os.status_name,
 	CONCAT(c.first_name,' ',c.last_name) as customer_name
 	FROM orders o
 	INNER JOIN orders_status os ON o.status_id = os.id
 	INNER JOIN customers c ON o.customer_id = c.id
-	LIMIT ? OFFSET ?`
+	WHERE 1=1 `
+
+	sql = sql + filter + "LIMIT ? OFFSET ?"
+
 	results, err := repo.db.Query(sql, params.Limit, params.Offset)
 
 	if err != nil {
@@ -82,9 +101,25 @@ func (repo *repository) GetOrders(ctx context.Context, params *getOrdersRequest)
 	}
 	return orders, nil
 }
-func (repo *repository) GetTotalOrders() (int64, error) {
-	const sql = "SELECT COUNT(*) FROM orders"
+func (repo *repository) GetTotalOrders(ctx context.Context, params *getOrdersRequest) (int64, error) {
 	var total int64
+	var filter string
+
+	if params.Status != nil {
+		filter += fmt.Sprintf(" AND o.status_id  = %v ", params.Status.(float64))
+	}
+	if params.Date_From != nil && params.Date_To == nil {
+		filter += fmt.Sprintf(" AND o.order_date  >= '%v' ", params.Date_From.(string))
+	}
+	if params.Date_From == nil && params.Date_To != nil {
+		filter += fmt.Sprintf(" AND o.order_date  <= '%v' ", params.Date_To.(string))
+	}
+	if params.Date_From != nil && params.Date_To != nil {
+		filter += fmt.Sprintf(" AND o.order_date  between '%v' and '%v' ", params.Date_From.(string), params.Date_To.(string))
+	}
+
+	var sql = "SELECT COUNT(*) FROM orders o WHERE 1=1 " + filter
+
 	row := repo.db.QueryRow(sql)
 	err := row.Scan(&total)
 	if err != nil {

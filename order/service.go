@@ -38,7 +38,7 @@ func (s *service) GetOrders(ctx context.Context, params *getOrdersRequest) (*Ord
 	if err != nil {
 		panic(err.Error())
 	}
-	totalOrders, err := s.repo.GetTotalOrders()
+	totalOrders, err := s.repo.GetTotalOrders(ctx, params)
 	if err != nil {
 		panic(err.Error())
 	}

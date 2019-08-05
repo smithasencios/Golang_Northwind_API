@@ -20,8 +20,11 @@ type addOrderDetailRequest struct {
 	UnitPrice float64
 }
 type getOrdersRequest struct {
-	Limit  int
-	Offset int
+	Limit     int
+	Offset    int
+	Status    interface{}
+	Date_From interface{}
+	Date_To   interface{}
 }
 type getOrderDetailRequest struct {
 	orderId int64
