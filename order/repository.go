@@ -69,8 +69,12 @@ func (repo *repository) GetOrders(ctx context.Context, params *getOrdersRequest)
 		filter += fmt.Sprintf(" AND o.order_date  between '%v' and '%v' ", params.Date_From.(string), params.Date_To.(string))
 	}
 
-	var sql = `SELECT o.id,o.customer_id,o.order_date,o.status_id,os.status_name,
-	CONCAT(c.first_name,' ',c.last_name) as customer_name
+	var sql = `SELECT o.id,
+	o.customer_id,
+	o.order_date,
+	o.status_id,
+	os.status_name,
+	CONCAT(c.first_name,' ',c.last_name) as customer_name	
 	FROM orders o
 	INNER JOIN orders_status os ON o.status_id = os.id
 	INNER JOIN customers c ON o.customer_id = c.id
@@ -131,7 +135,11 @@ func (repo *repository) GetTotalOrders(ctx context.Context, params *getOrdersReq
 
 func (repo *repository) GetOrderById(ctx context.Context, params *getOrderByIdRequest) (*OrderListItem, error) {
 	var sql = `SELECT o.id,o.customer_id,o.order_date,o.status_id,os.status_name,
-	CONCAT(c.first_name,' ',c.last_name) as customer_name
+	CONCAT(c.first_name,' ',c.last_name) as customer_name,
+	c.company,
+	c.address,
+	c.business_phone,
+	c.city
 	FROM orders o
 	INNER JOIN orders_status os ON o.status_id = os.id
 	INNER JOIN customers c ON o.customer_id = c.id
@@ -140,7 +148,8 @@ func (repo *repository) GetOrderById(ctx context.Context, params *getOrderByIdRe
 	order := &OrderListItem{}
 
 	row := repo.db.QueryRow(sql, params.orderId)
-	err := row.Scan(&order.ID, &order.CustomerID, &order.OrderDate, &order.StatusId, &order.StatusName, &order.Customer)
+	err := row.Scan(&order.ID, &order.CustomerID, &order.OrderDate, &order.StatusId, &order.StatusName, &order.Customer,
+		&order.Company, &order.Address, &order.Phone, &order.City)
 	if err != nil {
 		panic(err.Error())
 	}

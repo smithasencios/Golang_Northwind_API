@@ -13,6 +13,10 @@ type (
 		StatusId   string                 `json:"status_id"`
 		StatusName string                 `json:"status_name"`
 		Customer   string                 `json:"customer"`
+		Company    string                 `json:"company"`
+		Address    string                 `json:"address"`
+		Phone      string                 `json:"phone"`
+		City       string                 `json:"city"`
 		Data       []*OrderDetailListItem `json:"data"`
 	}
 
