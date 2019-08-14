@@ -41,6 +41,7 @@ spec:
 """
 }
   }
+  
     stage('Build and push image with Container Builder') {
       steps {
         container('gcloud') {
@@ -60,7 +61,7 @@ spec:
         }
       }
     }
-    
+
     stage('Deploy Dev') {
       // Developer Branches
       when { branch 'development' }
@@ -75,6 +76,4 @@ spec:
           step([$class: 'KubernetesEngineBuilder',namespace:${env.BRANCH_NAME}, projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/services', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
         }
       }
-    }
-  }
 }
