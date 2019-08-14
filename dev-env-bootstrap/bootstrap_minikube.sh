@@ -30,3 +30,7 @@ else
   echo "Bootstrap script must be run from within same folder."
   exit 2
 fi
+# kubectl run api-db-mariadb-client --rm --tty -i --restart='Never' --image  docker.io/bitnami/mariadb:10.3.16-debian-9-r0 --namespace mariadb --command -- bash
+# mysql -h api-db-mariadb.mariadb.svc.cluster.local -uroot -p < tmp/database_creation_script.sql
+# mysql -h api-db-mariadb.mariadb.svc.cluster.local -uroot -p < tmp/database_data_script.sql
+# mysql -h api-db-mariadb.mariadb.svc.cluster.local -uroot -p northwind

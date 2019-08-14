@@ -5,8 +5,11 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - nodePort: 30101
-    port: 3000
+  - port: 80
+    name: http
+    targetPort: http
+  - port: 443
+    name: https
     targetPort: http
   selector:
     lfda-app-name: northwind-api
