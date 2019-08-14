@@ -1,7 +1,7 @@
 pipeline {
 
   environment {
-    PROJECT = "REPLACE_WITH_YOUR_PROJECT_ID"
+    PROJECT = "northwind-project"
     APP_NAME = "northwindapi"
     CLUSTER = "northwind"
     CLUSTER_ZONE = "us-central1-f"
