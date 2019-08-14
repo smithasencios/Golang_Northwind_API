@@ -42,39 +42,40 @@ spec:
 }
   }
   stages {
-      stage('Build and push image with Container Builder') {
-        steps {
-          container('gcloud') {
-            sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ."
-          }
+    stage('Build and push image with Container Builder') {
+      steps {
+        container('gcloud') {
+          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ."
         }
       }
+    }
 
-      stage('Deploy Production') {
-        // Production branch
-        when { branch 'master' }
-        steps{
-          container('kubectl') {
-            sh("kubectl get ns production || kubectl create ns production")
-            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/northwindapi:1.0.0#${IMAGE_TAG}#' ./k8s/production/*.yaml")
-            step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/production', credentialsId: env.JENKINS_CRED, verifyDeployments: true])                    
-          }
+    stage('Deploy Production') {
+      // Production branch
+      when { branch 'master' }
+      steps{
+        container('kubectl') {
+          sh("kubectl get ns production || kubectl create ns production")
+          sh("sed -i.bak 's#gcr.io/cloud-solutions-images/northwindapi:1.0.0#${IMAGE_TAG}#' ./k8s/production/*.yaml")
+          step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/production', credentialsId: env.JENKINS_CRED, verifyDeployments: true])                    
         }
       }
+    }
 
-      stage('Deploy Dev') {
-        // Developer Branches
-        when { branch 'development' }
-        steps {
-          container('kubectl') {
-            // Create namespace if it doesn't exist
-            sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
-            // Don't use public load balancing for development branches
-            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
-            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/northwindapi:1.0.0#${IMAGE_TAG}#' ./k8s/dev/*.yaml")
-            step([$class: 'KubernetesEngineBuilder',namespace:${env.BRANCH_NAME}, projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/dev', credentialsId: env.JENKINS_CRED, verifyDeployments: true])
-            step([$class: 'KubernetesEngineBuilder',namespace:${env.BRANCH_NAME}, projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/services', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
-          }
+    stage('Deploy Dev') {
+      // Developer Branches
+      when { branch 'development' }
+      steps {
+        container('kubectl') {
+          // Create namespace if it doesn't exist
+          sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
+          // Don't use public load balancing for development branches
+          sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
+          sh("sed -i.bak 's#gcr.io/cloud-solutions-images/northwindapi:1.0.0#${IMAGE_TAG}#' ./k8s/dev/*.yaml")
+          step([$class: 'KubernetesEngineBuilder',namespace:${env.BRANCH_NAME}, projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/dev', credentialsId: env.JENKINS_CRED, verifyDeployments: true])
+          step([$class: 'KubernetesEngineBuilder',namespace:${env.BRANCH_NAME}, projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/services', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
         }
+      }
+    }
   }
 }
