@@ -4,10 +4,6 @@ build:
   artifacts:
   - image: northwind-api
     context: .
-    # sync:
-    #   manual:
-    #   - src: '**/*.go'
-    #     dest: '$GOPATH/src/github.com/Golang_Northwind_API/'  
     docker:
       dockerfile: Dockerfile
 deploy:

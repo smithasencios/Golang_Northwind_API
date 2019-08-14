@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-analytics-ui-lb
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-west-2:395594542180:certificate/57399632-38a1-452d-9c74-cdc9c08e0207
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+
+    external-dns.alpha.kubernetes.io/hostname: ui.internal.dev.lfanalytics.io
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: http
+    targetPort: http
+  - port: 443
+    name: https
+    targetPort: http
+  selector:
+    lfda-app-name: dev-analytics-ui
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: dev-analytics-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      lfda-app-name: dev-analytics-ui
+  template:
+    metadata:
+      labels:
+        lfda-app-name: dev-analytics-ui
+    spec:
+      containers:
+      - name: frontend-ui
+        image: 395594542180.dkr.ecr.us-west-2.amazonaws.com/lfda/frontend-ui:git-<%= current_sha %>
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: LISTEN_PORT
+          value: "8080"
+        - name: SERVER_NAME
+          value: "_"
+        - name: API_BASE_URL
+          value: https://api.dev.lfanalytics.io
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
