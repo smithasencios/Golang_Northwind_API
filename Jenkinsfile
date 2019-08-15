@@ -23,8 +23,8 @@ spec:
   # Use service account that can deploy to all namespaces
   serviceAccountName: cd-jenkins
   containers:
-  - name: alpine
-    image: alpine:latest
+  - name: golang
+    image: golang:1.10.1-alpine3.7
     command:
     - cat
     tty: true
@@ -51,7 +51,7 @@ spec:
     }
 
     stage('Deploy Production') {
-      // Production branch
+      // Master branch
       when { branch 'master' }
       steps{
         container('kubectl') {
