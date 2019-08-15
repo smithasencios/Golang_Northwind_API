@@ -50,18 +50,6 @@ spec:
       }
     }
 
-    stage('Deploy Production') {
-      // Master branch
-      when { branch 'master' }
-      steps{
-        container('kubectl') {
-          sh("kubectl get ns production || kubectl create ns production")
-          sh("sed -i.bak 's#gcr.io/cloud-solutions-images/northwindapi:1.0.0#${IMAGE_TAG}#' ./k8s/production/*.yaml")
-          step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/production', credentialsId: env.JENKINS_CRED, verifyDeployments: true])                    
-        }
-      }
-    }
-
     stage('Deploy Dev') {
       // Developer Branches
       when { branch 'development' }
@@ -77,5 +65,18 @@ spec:
         }
       }
     }
+
+    stage('Deploy Production') {
+      // Master branch
+      when { branch 'master' }
+      steps{
+        container('kubectl') {
+          sh("kubectl get ns production || kubectl create ns production")
+          sh("sed -i.bak 's#gcr.io/cloud-solutions-images/northwindapi:1.0.0#${IMAGE_TAG}#' ./k8s/production/*.yaml")
+          step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/production', credentialsId: env.JENKINS_CRED, verifyDeployments: true])                    
+        }
+      }
+    }
+    
   }
 }

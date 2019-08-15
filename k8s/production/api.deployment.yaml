@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: northwind-api
-          image: gcr.io/cloud-solutions-images/gceme:1.0.0
+          image: gcr.io/cloud-solutions-images/northwindapi:1.0.0
           ports:
             - containerPort: 3000
               name: http
