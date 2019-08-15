@@ -3,7 +3,6 @@ package shared
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -11,7 +10,6 @@ import (
 func InitDB() *sql.DB {
 	conexionString := join(os.Getenv("NORTHWIND_DB_USER"), ":", os.Getenv("NORTHWIND_DB_PASSWORD"), "@tcp(", os.Getenv("DATABASE_HOST"), ")/", os.Getenv("NORTHWIND_DB_DATABASE"))
 	fmt.Println(conexionString)
-	log.Print(conexionString)
 	db, err := sql.Open("mysql", conexionString)
 	//root:lfda@tcp(localhost:3306)/northwind
 

@@ -19,13 +19,14 @@ import (
 func main() {
 	log.Print("Logging in Go!")
 	dbInstance := shared.InitDB()
-	log.Print(dbInstance)
+
 	var (
 		employeeRepo = employee.NewRepository(dbInstance)
 		productRepo  = product.NewRepository(dbInstance)
 		customerRepo = customer.NewRepository(dbInstance)
 		orderRepo    = order.NewRepository(dbInstance)
 	)
+
 	var (
 		employeeService employee.Service
 		productService  product.Service
@@ -33,6 +34,7 @@ func main() {
 		orderService    order.Service
 		authService     auth.Service
 	)
+
 	employeeService = employee.New(employeeRepo)
 	productService = product.New(productRepo)
 	customerService = customer.New(customerRepo)

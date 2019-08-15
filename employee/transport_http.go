@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -11,6 +12,7 @@ import (
 )
 
 func MakeHTTPHandler(s Service) http.Handler {
+	log.Print("Request to Employees")
 	r := chi.NewRouter()
 
 	getEmployeesHandler := kithttp.NewServer(
