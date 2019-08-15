@@ -19,7 +19,7 @@ import (
 func main() {
 	log.Print("Logging in Go!")
 	dbInstance := shared.InitDB()
-
+	log.Print(dbInstance)
 	var (
 		employeeRepo = employee.NewRepository(dbInstance)
 		productRepo  = product.NewRepository(dbInstance)
@@ -38,7 +38,6 @@ func main() {
 	customerService = customer.New(customerRepo)
 	orderService = order.New(orderRepo)
 	authService = auth.New()
-	log.Print("Logging in Go2!")
 	r := chi.NewRouter()
 	r.Use(shared.GetCors().Handler)
 
