@@ -24,7 +24,9 @@ type (
 		Data []*OrderDetailListItem `json:"data"`
 	}
 	OrderDetailListItem struct {
+		ID          int64   `json:"id"`
 		OrderId     int     `json:"order_id"`
+		ProductId   int     `json:"product_id"`
 		Quantity    float64 `json:"quantity"`
 		UnitPrice   float64 `json:"unit_price"`
 		ProductName string  `json:"product_name"`

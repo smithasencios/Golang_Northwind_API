@@ -42,6 +42,18 @@ func makeAddProductEndpoint(s Service) endpoint.Endpoint {
 
 	return addOrderEndpoint
 }
+func makeUpdateOrderEndpoint(s Service) endpoint.Endpoint {
+	updateOrderEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(addOrderRequest)
+		r, err := s.UpdateOrder(ctx, &req)
+		if err != nil {
+			return nil, err
+		}
+		return r, nil
+	}
+
+	return updateOrderEndpoint
+}
 func makeGetOrdersEndpoint(s Service) endpoint.Endpoint {
 	getOrdersEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getOrdersRequest)

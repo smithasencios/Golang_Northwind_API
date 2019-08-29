@@ -11,7 +11,7 @@ import (
 func MakeHTTPHandler(s Service) http.Handler {
 	r := chi.NewRouter()
 	getPermissionsByUserIDHandler := kithttp.NewServer(
-		makeGetEmployeesEndpoint(s),
+		makeGetPermissionsEndpoint(s),
 		getPermissionsByUserIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)

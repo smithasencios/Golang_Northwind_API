@@ -10,7 +10,7 @@ type getPermissionsByUserId struct {
 	UserID string
 }
 
-func makeGetEmployeesEndpoint(s Service) endpoint.Endpoint {
+func makeGetPermissionsEndpoint(s Service) endpoint.Endpoint {
 	getPermissionsEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getPermissionsByUserId)
 		r, err := s.GetPermissions(ctx, &req)

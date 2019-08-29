@@ -7,6 +7,8 @@ import (
 )
 
 type Repository interface {
+	UpdateOrder(ctx context.Context, params *addOrderRequest) (int64, error)
+	UpdateOrderDetail(ctx context.Context, params *addOrderDetailRequest) (int64, error)
 	InsertOrder(ctx context.Context, params *addOrderRequest) (int64, error)
 	InsertOrderDetail(ctx context.Context, params *addOrderDetailRequest) (int64, error)
 	GetOrders(ctx context.Context, params *getOrdersRequest) ([]*OrderListItem, error)
@@ -23,6 +25,34 @@ func NewRepository(db *sql.DB) Repository {
 		db: db,
 	}
 }
+
+func (repo *repository) UpdateOrder(ctx context.Context, params *addOrderRequest) (int64, error) {
+	const sql = `
+	UPDATE orders
+	SET customer_id = ?
+	WHERE id = ? `
+	_, err := repo.db.Exec(sql, params.CustomerID, params.ID)
+
+	if err != nil {
+		panic(err.Error())
+	}
+	return params.ID, nil
+}
+
+func (repo *repository) UpdateOrderDetail(ctx context.Context, params *addOrderDetailRequest) (int64, error) {
+	const sql = `
+	UPDATE order_details
+	SET quantity = ?,
+		unit_price = ?
+	WHERE id = ?`
+	_, err := repo.db.Exec(sql, params.Quantity, params.UnitPrice, params.ID)
+
+	if err != nil {
+		panic(err.Error())
+	}
+	return params.ID, nil
+}
+
 func (repo *repository) InsertOrder(ctx context.Context, params *addOrderRequest) (int64, error) {
 	const sql = `
 	INSERT INTO orders
@@ -164,7 +194,7 @@ func (repo *repository) GetOrderById(ctx context.Context, params *getOrderByIdRe
 }
 
 func GetOrderDetail(repo *repository, orderId *int64) ([]*OrderDetailListItem, error) {
-	const sql = `SELECT order_id,quantity,unit_price,p.product_name
+	const sql = `SELECT order_id,od.id,quantity,unit_price,p.product_name,product_id
 	FROM order_details od
 	INNER JOIN products p ON od.product_id = p.id
 	WHERE od.order_id = ?`
@@ -177,7 +207,7 @@ func GetOrderDetail(repo *repository, orderId *int64) ([]*OrderDetailListItem, e
 
 	for results.Next() {
 		order := &OrderDetailListItem{}
-		err = results.Scan(&order.OrderId, &order.Quantity, &order.UnitPrice, &order.ProductName)
+		err = results.Scan(&order.OrderId, &order.ID, &order.Quantity, &order.UnitPrice, &order.ProductName, &order.ProductId)
 		if err != nil {
 			panic(err.Error())
 		}
