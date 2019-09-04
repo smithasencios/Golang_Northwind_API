@@ -30,6 +30,10 @@ type getOrderByIdRequest struct {
 	orderId int64
 }
 
+type deleteOrderDetailRequest struct {
+	OrderDetailID string
+}
+
 func makeAddProductEndpoint(s Service) endpoint.Endpoint {
 	addOrderEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addOrderRequest)
@@ -78,4 +82,16 @@ func makeGetOrderByIdEndpoint(s Service) endpoint.Endpoint {
 	}
 
 	return getOrderByIdEndpoint
+}
+func makeDeleteOrderDetailEndpoint(s Service) endpoint.Endpoint {
+	deleteOrderDeleteEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(deleteOrderDetailRequest)
+		r, err := s.DeleteOrderDetail(ctx, &req)
+		if err != nil {
+			return nil, err
+		}
+		return r, nil
+	}
+
+	return deleteOrderDeleteEndpoint
 }

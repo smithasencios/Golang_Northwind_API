@@ -9,6 +9,7 @@ type Service interface {
 	UpdateOrder(ctx context.Context, params *addOrderRequest) (int64, error)
 	GetOrders(ctx context.Context, params *getOrdersRequest) (*OrderList, error)
 	GetOrderById(ctx context.Context, params *getOrderByIdRequest) (*OrderListItem, error)
+	DeleteOrderDetail(ctx context.Context, params *deleteOrderDetailRequest) (int64, error)
 }
 
 type service struct {
@@ -72,4 +73,8 @@ func (s *service) GetOrderById(ctx context.Context, params *getOrderByIdRequest)
 		panic(err.Error())
 	}
 	return order, err
+}
+
+func (s *service) DeleteOrderDetail(ctx context.Context, params *deleteOrderDetailRequest) (int64, error) {
+	return s.repo.DeleteOrderDetail(ctx, params)
 }

@@ -42,6 +42,13 @@ func MakeHTTPHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodPut, "/", updateOrderHandler)
 
+	deleteOrderDetailHandler := kithttp.NewServer(
+		makeDeleteOrderDetailEndpoint(s),
+		getDeleteOrderDetailRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodDelete, "/{orderId}/{orderDetailId}", deleteOrderDetailHandler)
+
 	return r
 }
 
@@ -82,4 +89,9 @@ func getUpdateOrderRequestDecoder(_ context.Context, r *http.Request) (interface
 	}
 
 	return request, nil
+}
+func getDeleteOrderDetailRequestDecoder(_ context.Context, r *http.Request) (interface{}, error) {
+	return deleteOrderDetailRequest{
+		OrderDetailID: chi.URLParam(r, "orderDetailId"),
+	}, nil
 }
