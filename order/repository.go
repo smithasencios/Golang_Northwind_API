@@ -15,6 +15,8 @@ type Repository interface {
 	GetOrderById(ctx context.Context, params *getOrderByIdRequest) (*OrderListItem, error)
 	GetTotalOrders(ctx context.Context, params *getOrdersRequest) (int64, error)
 	DeleteOrderDetail(ctx context.Context, params *deleteOrderDetailRequest) (int64, error)
+	DeleteOrder(ctx context.Context, params *deleteOrderRequest) (int64, error)
+	DeleteOrderDetailByIdOrderId(ctx context.Context, params *deleteOrderRequest) (int64, error)
 }
 
 type repository struct {
@@ -216,9 +218,36 @@ func GetOrderDetail(repo *repository, orderId *int64) ([]*OrderDetailListItem, e
 	}
 	return orders, nil
 }
+
 func (repo *repository) DeleteOrderDetail(ctx context.Context, params *deleteOrderDetailRequest) (int64, error) {
 	const sql = `DELETE FROM order_details WHERE id = ?`
 	result, err := repo.db.Exec(sql, params.OrderDetailID)
+	if err != nil {
+		panic(err)
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	return count, nil
+}
+
+func (repo *repository) DeleteOrder(ctx context.Context, params *deleteOrderRequest) (int64, error) {
+	const sql = `DELETE FROM orders WHERE id = ?;`
+	result, err := repo.db.Exec(sql, params.OrderID)
+	if err != nil {
+		panic(err)
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	return count, nil
+}
+
+func (repo *repository) DeleteOrderDetailByIdOrderId(ctx context.Context, params *deleteOrderRequest) (int64, error) {
+	const sql = `DELETE FROM order_details WHERE order_id = ?`
+	result, err := repo.db.Exec(sql, params.OrderID)
 	if err != nil {
 		panic(err)
 	}
