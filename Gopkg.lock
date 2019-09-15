@@ -2,6 +2,30 @@
 
 
 [[projects]]
+  name = "github.com/KyleBanks/depth"
+  packages = ["."]
+  revision = "fec4dc38699e903ea7b44b2887549d2e7cd0a9f1"
+  version = "v1.2.1"
+
+[[projects]]
+  name = "github.com/PuerkitoBio/purell"
+  packages = ["."]
+  revision = "44968752391892e1b0d0b821ee79e9a85fa13049"
+  version = "v1.1.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/PuerkitoBio/urlesc"
+  packages = ["."]
+  revision = "de5bf2ad457846296e2031421a34e2568e304e35"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/alecthomas/template"
+  packages = [".","parse"]
+  revision = "fb15b899a75114aa79cc930e33c46b577cc664b1"
+
+[[projects]]
   branch = "master"
   name = "github.com/auth0/go-jwt-middleware"
   packages = ["."]
@@ -44,6 +68,30 @@
   version = "v0.4.0"
 
 [[projects]]
+  name = "github.com/go-openapi/jsonpointer"
+  packages = ["."]
+  revision = "ed123515f087412cd7ef02e49b0b0a5e6a79a360"
+  version = "v0.19.3"
+
+[[projects]]
+  name = "github.com/go-openapi/jsonreference"
+  packages = ["."]
+  revision = "82f31475a8f7a12bc26962f6e26ceade8ea6f66a"
+  version = "v0.19.3"
+
+[[projects]]
+  name = "github.com/go-openapi/spec"
+  packages = ["."]
+  revision = "2223ab324566e4ace63ab69b9c8fff1b81a40eeb"
+  version = "v0.19.3"
+
+[[projects]]
+  name = "github.com/go-openapi/swag"
+  packages = ["."]
+  revision = "c3d0f7896d589f3babb99eea24bbc7de98108e72"
+  version = "v0.19.5"
+
+[[projects]]
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   revision = "72cd26f257d44c1114970e19afddcd812016007e"
@@ -56,14 +104,68 @@
   revision = "b84e30acd515aadc4b783ad4ff83aff3299bdfe0"
 
 [[projects]]
+  name = "github.com/mailru/easyjson"
+  packages = ["buffer","jlexer","jwriter"]
+  revision = "1b2b06f5f209fea48ff5922d8bfb2b9ed5d8f00b"
+  version = "v0.7.0"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/swaggo/files"
+  packages = ["."]
+  revision = "630677cd5c140664e2ff6b53e75c289877268c69"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/swaggo/http-swagger"
+  packages = ["."]
+  revision = "c2865af9083e2d95ea55cd2734c03f7f81030cea"
+
+[[projects]]
+  name = "github.com/swaggo/swag"
+  packages = ["."]
+  revision = "52091f11ff1d0c58cd3403970c6160713f117246"
+  version = "v1.6.2"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["idna","webdav","webdav/internal/xml"]
+  revision = "24e19bdeb0f2d062d8e2640d50a7aaf2a7f80e7a"
+
+[[projects]]
+  name = "golang.org/x/text"
+  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/language","internal/language/compact","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable","width"]
+  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
+  version = "v0.3.2"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/tools"
+  packages = ["go/ast/astutil","go/buildutil","go/internal/cgo","go/loader"]
+  revision = "31e00f45c22e7b8b4b5a004fd8a01c664f7b175b"
+
+[[projects]]
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   revision = "54a98f90d1c46b7731eb8fb305d2a321c30ef610"
   version = "v1.5.0"
 
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "784849944ea21c8e327f521d77bfabc1ac2c4df90c4dce68afd12e1d1db6a4e1"
+  inputs-digest = "3005e8966d1f2f8d9be0b188f5d860607f55c67ec972281ae2eb9a1bede2c903"
   solver-name = "gps-cdcl"
   solver-version = 1

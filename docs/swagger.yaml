@@ -1,0 +1,107 @@
+definitions:
+  order.OrderDetailListItem:
+    properties:
+      id:
+        type: integer
+      order_id:
+        type: integer
+      product_id:
+        type: integer
+      product_name:
+        type: string
+      quantity:
+        type: number
+      unit_price:
+        type: number
+    type: object
+  order.OrderList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/order.OrderListItem'
+        type: array
+      totalRecords:
+        type: integer
+    type: object
+  order.OrderListItem:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      company:
+        type: string
+      customer:
+        type: string
+      customer_id:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/order.OrderDetailListItem'
+        type: array
+      order_date:
+        type: string
+      order_id:
+        type: integer
+      phone:
+        type: string
+      status_id:
+        type: string
+      status_name:
+        type: string
+    type: object
+  order.getOrdersRequest:
+    properties:
+      date_From:
+        type: object
+      date_To:
+        type: object
+      limit:
+        type: integer
+      offset:
+        type: integer
+      status:
+        type: object
+    type: object
+info:
+  contact:
+    email: code4humans@gmail.com
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Northwind API
+  license: {}
+  title: Northwind API
+  version: "1.0"
+paths:
+  /orders/paginated:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Data
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/order.getOrdersRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            items:
+              $ref: '#/definitions/order.OrderList'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: List Orders
+      tags:
+      - orders
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

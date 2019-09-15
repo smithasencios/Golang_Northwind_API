@@ -1,11 +1,12 @@
 package order
 
 type (
+	// OrderList
 	OrderList struct {
 		Data         []*OrderListItem `json:"data"`
 		TotalRecords int64            `json:"totalRecords"`
 	}
-
+	// OrderListItem
 	OrderListItem struct {
 		ID         int64                  `json:"order_id"`
 		CustomerID int                    `json:"customer_id"`

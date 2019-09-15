@@ -1,0 +1,165 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Northwind API",
+        "title": "Northwind API",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "code4humans@gmail.com"
+        },
+        "license": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/orders/paginated": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "List Orders",
+                "parameters": [
+                    {
+                        "description": "User Data",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/order.getOrdersRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/order.OrderList"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "order.OrderDetailListItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "order_id": {
+                    "type": "integer"
+                },
+                "product_id": {
+                    "type": "integer"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "unit_price": {
+                    "type": "number"
+                }
+            }
+        },
+        "order.OrderList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/order.OrderListItem"
+                    }
+                },
+                "totalRecords": {
+                    "type": "integer"
+                }
+            }
+        },
+        "order.OrderListItem": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "customer": {
+                    "type": "string"
+                },
+                "customer_id": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/order.OrderDetailListItem"
+                    }
+                },
+                "order_date": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "status_id": {
+                    "type": "string"
+                },
+                "status_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "order.getOrdersRequest": {
+            "type": "object",
+            "properties": {
+                "date_From": {
+                    "type": "object"
+                },
+                "date_To": {
+                    "type": "object"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "object"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

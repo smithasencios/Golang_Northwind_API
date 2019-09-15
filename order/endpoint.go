@@ -62,6 +62,16 @@ func makeUpdateOrderEndpoint(s Service) endpoint.Endpoint {
 
 	return updateOrderEndpoint
 }
+
+// Orders
+// @Summary List Orders
+// @Tags orders
+// @Accept  json
+// @Produce  json
+// @Param message body order.getOrdersRequest true "User Data"
+// @Success 200 {array} order.OrderList	"ok"
+// @Router /orders/paginated [post]
+// @Security ApiKeyAuth
 func makeGetOrdersEndpoint(s Service) endpoint.Endpoint {
 	getOrdersEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getOrdersRequest)
